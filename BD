@@ -1,0 +1,40 @@
+Задание 4 
+1. Количество заявок в БД:
+mysql> 
+SELECT COUNT (ID_Request) FROM BD;
+
+2.Количество заявок, где возраст клиентов больше 25 лет:
+mysql>
+SELECT COUNT (ID_Request) 
+FROM BD 
+WHERE TIMESTAMPDIFF(YEAR,BirthDate,CURDATE()) AS Age > 25; 
+
+3. Количество заявок, где выполняется условие:
+- Доходы более 30 000 рублей;
+- Расходы равны 0;
+- Должность равен "Кладовщик" или "Оператор".
+
+mysql>
+SELECT COUNT (ID_Request) 
+FROM BD WHERE MonthlyIncome > 30000 
+AND Expense = 0 
+AND Position = 'кладовщик' 
+OR Position = 'оператор';
+
+4. ID_Request, MonthlyIncome, Expense по заявкам, где возраст больше 30 лет и должность
+равен "Водитель". Результат отсортировать по полю BirthDate:
+
+mysql>
+SELECT ID_Request, MonthlyIncome, Expense 
+FROM BD WHERE TIMESTAMPDIFF(YEAR,BirthDate,CURDATE()) AS Age > 30 
+AND Position = 'водитель' 
+ORDER BY BirthDate;
+
+5. ID_Request, MonthlyIncome, Position по заявкам, где возраст менее 30 лет и имя клиента
+равен "Азат". Результат отсортировать по полю MonthlyIncome
+
+mysql>
+SELECT ID_Request, MonthlyIncome, Position
+FROM BD WHERE TIMESTAMPDIFF(YEAR,BirthDate,CURDATE()) AS Age < 30 
+AND FIO LIKE '%Азат%' 
+ORDER BY MonthlyIncome;
