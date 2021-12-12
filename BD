@@ -1,40 +1,97 @@
+Красильников С.Г.  
+
+Задание 4. В БД системы содержится следующая информация:
+ID_Request - ИД заявки;
+FIO – ФИО клиента;
+BirthDate - дата рождения клиента;
+MonthlyIncome - Ежемесяные доходы клиента;
+Expense - Ежемесяные расходы клиента;
+Position - Должность клиента.
+
+Для выполнения задания я выбрал СУБД PostgreSQL 10 и инструмент pgAdmin4
+________________________________________________
+СУБД PostgreSQL 10
+--------------------------------------------------------------------------------
+//DDL-скрипт содания тестовой базы и таблицы
+
+CREATE DATABASE test_db
+    WITH 
+    OWNER = postgres
+    TEMPLATE = template1
+    ENCODING = 'UTF8'
+    CONNECTION LIMIT = -1;
+
+Create Table Clients (
+ID_Request serial PRIMARY KEY,
+FIO text NOT NULL,
+BirthDate date NOT NULL,
+MonthlyIncome numeric NOT NULL,
+Expense numeric NOT NULL,
+Position text NOT NULL);
+
+//Заполняем тестовую базу данными
+
+Insert INTO Clients VALUES
+(0001, 'БЫСТРОУМОВ ГРИГОРИЙ ВАСИЛЬЕВИЧ', '1987-09-01', 32001, 8000, 'механик'),
+(0002, 'БАЙРАМОВ АЗАТ РАДИКОВИЧ', '1986-02-02', 45656, 0, 'оператор'),
+(0003, 'МУЛЛАЯНОВ ПАВЕЛ ГЕОРГИЕВИЧ', '1989-01-03', 12245, 0, 'механик'),
+(0004, 'МИСЬКО ГУЛЬНАЗ ФАНИЛЕВНА', '1994-09-14', 78906, 0, 'оператор'),
+(0005, 'КОМАРОВ АЗАТ ИРИКОВИЧ', '1990-03-05', 45621, 5000, 'кладовщик'),
+(0006, 'ГИБАДУЛЛИН РАДИК РАФИКОВИЧ', '1963-09-06', 32456, 0, 'водитель'),
+(0007, 'ПАВЛОВ АЗАМАТ ФАНИЛЕВИЧ', '1956-08-07', 32465, 12000, 'механик'),
+(0008, 'САГИРОВА ВЕСТА ЕВГЕНЬЕВНА', '1989-09-28', 14657, 0, 'оператор'),
+(0009, 'ВОЛКАНИНА ГАЛИНА ВАЛЕРЬЕВНА', '1978-07-19', 62654, 0, 'водитель'),
+(0010, 'ШИРИЕВ ИЛЬСУР РАФИСОВИЧ', '1963-09-10', 90689, 15456, 'водитель'),
+(0011, 'ВАСИЛЬЕВ МАРАТ ФААТОВИЧ', '1996-03-21', 54520, 0, 'водитель'),
+(0012, 'ШАМСУТДИНОВ СЕРГЕЙ ВИКТОРОВИЧ', '1994-09-12', 45611, 0, 'механик'),
+(0013, 'ЗОТКИНА ГУЗЕЛЬ ИЛЬГИЗАРОВНА', '1990-04-23', 63278, 45465, 'оператор'),
+(0014, 'ЛАСЬКОВ МАКСИМ ЕВГЕНЬЕВИЧ', '1963-07-14', 98742, 0, 'кладовщик');
+
+_________________________________________________________________________________
+
 Задание 4 
 1. Количество заявок в БД:
-mysql> 
-SELECT COUNT (ID_Request) FROM BD;
+pgsql> 
 
-2.Количество заявок, где возраст клиентов больше 25 лет:
-mysql>
-SELECT COUNT (ID_Request) 
-FROM BD 
-WHERE TIMESTAMPDIFF(YEAR,BirthDate,CURDATE()) AS Age > 25; 
+SELECT COUNT (ID_Request) FROM Clients;
+
+2. Количество заявок, где возраст клиентов больше 25 лет:
+pgsql>
+
+SELECT COUNT (ID_Request)
+FROM Clients WHERE
+date_part('year',age(BirthDate)) > 25;
 
 3. Количество заявок, где выполняется условие:
 - Доходы более 30 000 рублей;
 - Расходы равны 0;
 - Должность равен "Кладовщик" или "Оператор".
 
-mysql>
+pgsql>
+
 SELECT COUNT (ID_Request) 
-FROM BD WHERE MonthlyIncome > 30000 
+FROM Clients WHERE MonthlyIncome > 30000 
 AND Expense = 0 
-AND Position = 'кладовщик' 
-OR Position = 'оператор';
+AND (Position = 'кладовщик' OR Position = 'оператор');
 
 4. ID_Request, MonthlyIncome, Expense по заявкам, где возраст больше 30 лет и должность
 равен "Водитель". Результат отсортировать по полю BirthDate:
 
-mysql>
+pgsql>
+
 SELECT ID_Request, MonthlyIncome, Expense 
-FROM BD WHERE TIMESTAMPDIFF(YEAR,BirthDate,CURDATE()) AS Age > 30 
+FROM Clients WHERE date_part('year',age(BirthDate)) > 30 
 AND Position = 'водитель' 
 ORDER BY BirthDate;
 
 5. ID_Request, MonthlyIncome, Position по заявкам, где возраст менее 30 лет и имя клиента
 равен "Азат". Результат отсортировать по полю MonthlyIncome
 
-mysql>
-SELECT ID_Request, MonthlyIncome, Position
-FROM BD WHERE TIMESTAMPDIFF(YEAR,BirthDate,CURDATE()) AS Age < 30 
-AND FIO LIKE '%Азат%' 
+pgsql>
+
+SELECT ID_Request, MonthlyIncome
+FROM Clients WHERE date_part('year',age(BirthDate)) > 30 
+AND FIO::text ILIKE '%Азат%'
 ORDER BY MonthlyIncome;
+
+
