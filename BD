@@ -88,7 +88,18 @@ ORDER BY BirthDate;
 
 pgsql>
 
-SELECT ID_Request, MonthlyIncome
+SELECT ID_Request, MonthlyIncome, Position
 FROM Clients WHERE date_part('year',age(BirthDate)) > 30 
 AND FIO::text ILIKE '%Азат%'
 ORDER BY MonthlyIncome;
+
+5.1. Для наглядности еще вариант запроса: с добавлением колонки FIO
+
+pgsql>
+
+SELECT ID_Request, FIO, MonthlyIncome, Position
+FROM Clients WHERE date_part('year',age(BirthDate)) > 30 
+AND FIO::text ILIKE '%Азат%'
+ORDER BY MonthlyIncome;
+
+
